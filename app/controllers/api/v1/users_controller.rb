@@ -3,7 +3,7 @@ gem 'bcrypt'
 class Api::V1::UsersController < ApplicationController
   wrap_parameters :user, include: [:username, :password, :password_confirmation]
   skip_before_action :authorized, only: [:create]
-  before_action :set_user, only: [:show, :update, :destroy]
+  before_action :set_user, only: [:show, :update, :destroy, :update_password]
 
   # GET /users
   def index
@@ -18,8 +18,6 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def profile
-    puts "$$$$$$$$$$$$$"
-    puts current_user
     render json: { user: UserSerializer.new(current_user) }, status: :accepted
   end
 
@@ -40,9 +38,12 @@ class Api::V1::UsersController < ApplicationController
     if @user.update(user_params)
       render json: @user
     else
-      render json: @user.errors, status: :unprocessable_entity
+      render json: {message: "Error"} #@user.errors, status: :unprocessable_entity
     end
   end
+
+  # def update_password
+  # end
 
   # DELETE /users/1
   def destroy
@@ -57,6 +58,9 @@ class Api::V1::UsersController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def user_params
+      puts "=============="
+      puts params.inspect
+
       params.require(:user).permit(:username, :password, :password_confirmation)
     end
 end

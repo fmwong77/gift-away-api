@@ -4,6 +4,7 @@ Rails.application.routes.draw do
       resources :users, only: [:create]
       post '/login', to: 'auth#create'
       get '/profile', to: 'users#profile'
+      # post '/users/changepassword', to: 'user#update_password'
 
       resources :replies
       resources :comments
@@ -15,7 +16,7 @@ Rails.application.routes.draw do
   end
   post 'rails/active_storage/direct_uploads', to: 'direct_uploads#create'
 
-
+  root :to => 'home#index'
 
   # resources :replies
   # resources :comments

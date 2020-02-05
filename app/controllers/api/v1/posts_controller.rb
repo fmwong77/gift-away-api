@@ -4,7 +4,8 @@ class Api::V1::PostsController < ApplicationController
   # GET /posts
   def index
     @posts = Post.all
-    render json: @posts.with_attached_image
+    params[:type] == "view" ? @posts = Post.all.where("user_id<>#{params[:user_id]}") : @posts = Post.all.where("user_id=#{params[:user_id]}")
+    render json: @posts
   end
 
   # GET /posts/1
@@ -14,14 +15,6 @@ class Api::V1::PostsController < ApplicationController
 
   # POST /posts
   def create
-    # puts post_params[:title]
-    #   puts post_params[:description]
-    #   puts post_params[:latitude]
-    #   puts post_params[:longitude]
-    #   puts post_params[:user_id]
-    #   puts post_params[:category_id]
-    #   puts post_params[:images]
-      
     @post = Post.new(post_params)
     if @post.save
       render json: @post#, status: :created, location: @post
@@ -32,12 +25,25 @@ class Api::V1::PostsController < ApplicationController
 
   # PATCH/PUT /posts/1
   def update
-    byebug
-    # post = Post.find(params[:id])
-    @post.update(image: params[:image])
-    image_url = rails_blob_path(@post.image)
-    # if @post.update(params)
+    # @post = Post.find(params[:id])
+    if (@post && params[:info] != "post")
+      # byebug
+      @post.image.purge
+      @post.update(image: params[:image])
+      image_url = rails_blob_path(@post.image)
       render json: {post: @post, image_url: image_url}
+    else
+      # byebug
+      @post.update(post_params)
+      if @post.update(post_params)
+        render json: @post
+      else
+        render json: {message: "Error"} #@post.errors, status: :unprocessable_entity
+      end
+    end
+    
+    # if @post.update(params)
+      # render json: {post: @post, image_url: image_url}
     # else
     #   render json: {message: "Error"} #@post.errors, status: :unprocessable_entity
     # end
@@ -56,6 +62,8 @@ class Api::V1::PostsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def post_params
+      # puts
+      byebug
       params.require(:post).permit(:title, :description, :latitude, :longitude, :user_id, :category_id, :image)
     end
 end
