@@ -18,7 +18,7 @@ Rails.application.routes.draw do
 
   root :to => 'home#index'
 
-  # resources :replies
+  resources :sessions, only: [:create]
   # resources :comments
   # resources :posts
   # resources :categories
