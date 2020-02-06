@@ -1,26 +1,33 @@
 class Api::V1::CommentsController < ApplicationController
-  before_action :set_comment, only: [:show, :update, :destroy]
+  before_action :set_comment, only: [ :show, :update, :destroy]
+  skip_before_action :authorized, only: [:index]
 
   # GET /comments
   def index
-    @comments = Comment.all
+    # byebug
+    @comments = Comment.all.where("post_id=#{params[:post_id]}")
 
     render json: @comments
   end
 
   # GET /comments/1
   def show
+    byebug
+    # @comments = Comment.all.find_by(post_id: params[:post_id])
+
     render json: @comment
   end
 
   # POST /comments
   def create
     @comment = Comment.new(comment_params)
-
+# byebug
     if @comment.save
-      render json: {message: "Success"} #@comment, status: :created, location: @comment
+      @comments = Comment.all.where("post_id=#{params[:post_id]}")
+      # byebug
+      render json: @comment, status: 200
     else
-      render json: {message: "Success"} #@comment.errors, status: :unprocessable_entity
+      render json: {message: "Error"} #@comment.errors, status: :unprocessable_entity
     end
   end
 
