@@ -25,7 +25,7 @@ class Api::V1::CommentsController < ApplicationController
     if @comment.save
       @comments = Comment.all.where("post_id=#{params[:post_id]}")
       # byebug
-      render json: @comment, status: 200
+      render json: @comments, status: 200
     else
       render json: {message: "Error"} #@comment.errors, status: :unprocessable_entity
     end
