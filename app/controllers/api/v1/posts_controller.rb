@@ -4,8 +4,15 @@ class Api::V1::PostsController < ApplicationController
 
   # GET /posts
   def index
-    @posts = Post.all
-    params[:type] == "view" ? @posts = Post.all.where("user_id<>#{params[:user_id]}") : @posts = Post.all.where("user_id=#{params[:user_id]}")
+    # @posts = Post.all
+    # if params[:category_id == 0]
+    #   byebug
+      params[:type] == "view" ? @posts = Post.all.where("user_id<>#{params[:user_id]}") : @posts = Post.all.where("user_id=#{params[:user_id]}")
+    # else
+    #   byebug
+    #   params[:type] == "view" ? @posts = Post.all.where("user_id<>#{params[:user_id]} and category_id=#{params[:category_id]}") : @posts = Post.all.where("user_id=#{params[:user_id]} and category_id=#{params[:category_id]}")
+    # end
+    # byebug
     render json: @posts
   end
 

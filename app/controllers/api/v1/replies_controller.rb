@@ -3,7 +3,8 @@ class Api::V1::RepliesController < ApplicationController
 
   # GET /replies
   def index
-    @replies = Reply.all
+    # byebug
+    @replies = Reply.all.where("comment_id=#{params[:comment_id]}")
 
     render json: @replies
   end
@@ -16,11 +17,12 @@ class Api::V1::RepliesController < ApplicationController
   # POST /replies
   def create
     @reply = Reply.new(reply_params)
-
+# byebug
     if @reply.save
-      render json: {message: "Success"} #@reply, status: :created, location: @reply
+# byebug
+      render json: @reply, status: 200 #@reply, status: :created, location: @reply
     else
-      render json: {message: "Success"} #@reply.errors, status: :unprocessable_entity
+      render json: {message: "Error"} #@reply.errors, status: :unprocessable_entity
     end
   end
 
