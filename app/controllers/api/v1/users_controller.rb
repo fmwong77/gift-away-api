@@ -7,7 +7,7 @@ class Api::V1::UsersController < ApplicationController
 
   # GET /users
   def index
-    @users = User.all
+    @users = User.find(params[:user_id])
 
     render json: @users
   end
